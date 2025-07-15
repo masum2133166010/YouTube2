@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>YouTube Downloader</title>
+  <style>
+    body { font-family: Arial; text-align: center; padding-top: 50px; }
+    input, button { padding: 10px; margin: 10px; width: 300px; }
+  </style>
+</head>
+<body>
+  <h2>YouTube Video Downloader</h2>
+  <input type="text" id="url" placeholder="Paste YouTube link here">
+  <br>
+  <button onclick="getDownloadLink()">Get Download Link</button>
+  <p id="result"></p>
+
+  <script>
+    async function getDownloadLink() {
+      const url = document.getElementById('url').value;
+      const res = await fetch('/api/download', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({url})
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        document.getElementById('result').innerHTML = `
+          <b>${data.title}</b><br>
+          <a href="${data.download_url}" download>Click here to Download</a>
+        `;
+      } else {
+        document.getElementById('result').innerText = "Error: " + data.message;
+      }
+    }
+  </script>
+</body>
+</html>
